@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="C:/fadi/spring projects/FinalProject">
+        <classes>
+            <class name="AmazonTests.AuthenticationTestSuite.LoginTest">
+                <methods>
+                    <include name="EmailThatDoesNotExists"/>
+                    <include name="PhoneThatDoesNotExists"/>
+                </methods>
+            </class>
+            <class name="AmazonTests.AuthenticationTestSuite.RegistrationTest">
+                <methods>
+                    <include name="passwordDoNotMatch"/>
+                    <include name="passwordLessThanSixDigits"/>
+                    <include name="invalidEmail"/>
+                </methods>
+            </class>
+            <class name="AmazonTests.SearchSuite.SearchTest">
+                <parameter name="minPrice" value="5.59"></parameter>
+                <parameter name="searchForResult" value="airpods pro case cover"></parameter>
+                <methods>
+                    <include name="checkHowManyResultsWeGot"/>
+                    <include name="checkTheCheapestPriceForAProduct"/>
+                </methods>
+            </class>
+            <class name="AmazonTests.ShoppingCartSuite.ShoppingCartTest">
+                <parameter name="expectedDeletedNumber" value="1"></parameter>
+                <parameter name="theSavedNumber" value="1"></parameter>
+                <methods>
+                    <include name="addingProductToCart"/>
+                    <include name="deletingProductsFromCart"/>
+                    <include name="saveItemForLater"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
