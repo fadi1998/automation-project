@@ -1,39 +1,27 @@
 package AmazonTests.SearchSuite;
 
-import Pages.AmazonSearchPage;
-import Utils.DriverUtils;
+import Extensions.Verifications;
+import Pages.WebPages.AmazonSearchPage;
+import Utils.AllureListeners;
+import WorkFlows.AmazonSearchWorkFlows;
 import io.qameta.allure.Description;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-public class SearchTest {
-    AmazonSearchPage amazonSearchPage;
+@Listeners(AllureListeners.class)
+public class SearchTest extends AmazonSearchWorkFlows{
 
     @BeforeClass
     public void setUp()
     {
-        WebDriver driver = DriverUtils.createDriverObj(2);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        amazonSearchPage = new AmazonSearchPage(driver, wait);
-        amazonSearchPage.visit("https://www.amazon.com/");
+        AmazonSearchWorkFlows.visitAmazonHomePage();
     }
 
     @BeforeMethod
-    public void EmptySearchInput()
+    public void emptySearchInput()
     {
-        amazonSearchPage.clear(amazonSearchPage.getSearchBox());
+        emptyInput();
     }
 
     @DataProvider(name = "my-data-provider-search")
@@ -43,55 +31,42 @@ public class SearchTest {
     }
     @Test(dataProvider = "my-data-provider-search")
     @Description("Search Description:Trying to search for a product and checking how many results we got")
-    @Severity(SeverityLevel.BLOCKER)
     @Story("checking how many results search test")
-    public void checkHowManyResultsWeGot(String searchText,String actual)
+    public void checkHowManyResultsWeGot(String productName,String actual)
     {
-        amazonSearchPage.typeInto(searchText, amazonSearchPage.getSearchBox());
-        amazonSearchPage.click(amazonSearchPage.getSearchBoxSubmit());
+        typeIntoSearchBox(productName);
+        clickSearchButton();
+        String expected = getProductsResult();
 
-        String[] resultExpected = amazonSearchPage.getText(amazonSearchPage.getResult()).split(" ");
-        Assert.assertEquals(actual, resultExpected[3]);
+        Verifications.verifyResult(actual, expected);
     }
 
     @Test()
     @Parameters({"minPrice", "searchForResult"})
     @Description("Search Description:Trying to search for a product with the minimum price")
-    @Severity(SeverityLevel.BLOCKER)
     @Story("search for the cheapest product")
-    public void checkTheCheapestPriceForAProduct(@Optional("5.59") double expectedPrice, @Optional("airpods pro case cover") String searchText)
+    public void checkTheCheapestPriceForAProduct(@Optional("5.51") double expected, @Optional("airpods pro case cover") String productName)
     {
-        amazonSearchPage.typeInto(searchText, amazonSearchPage.getSearchBox());
-        amazonSearchPage.click(amazonSearchPage.getSearchBoxSubmit());
-        double actualPrice =0;
-        List<WebElement> priceList = amazonSearchPage.findElems(amazonSearchPage.getPriceList());
+        typeIntoSearchBox(productName);
+        clickSearchButton();
+        double actual = getCheapestPrice();
 
-        double price = Double.parseDouble(priceList.get(0).getAttribute("innerText").replace("$",""));
-        for(WebElement curr : priceList)
-        {
-            actualPrice = Double.parseDouble(curr.getAttribute("innerText").replace("$", ""));
-            if( actualPrice < price)
-                price = actualPrice;
-        }
-        Assert.assertEquals(price,expectedPrice);
+        Verifications.verifyCheapestPrice(actual, expected);
     }
 
     @AfterMethod
-    public void takenScreenShot(ITestResult result)
+    public void takeScreenShotOnFaliure(ITestResult iTestResult)
     {
-        if(result.getStatus() == ITestResult.FAILURE)
+        if(iTestResult.getStatus() == ITestResult.FAILURE)
         {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy__hh_mm_ss");
-            LocalDateTime now = LocalDateTime.now();
-            String fileName = "search failed test "+result.getMethod().getMethodName()+"_"+ now.format(dtf);
-            amazonSearchPage.takeScreenShot("captureScreenShots", fileName, amazonSearchPage.getDriver());
+            saveFullPageScreenShot(amazonSearchPage.getDriver());
         }
     }
 
     @AfterClass
     public void terminate()
     {
-        amazonSearchPage.terminate();
+        AmazonSearchWorkFlows.terminateBrowser();
     }
 }
 

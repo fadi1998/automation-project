@@ -1,37 +1,30 @@
 package AmazonTests.AuthenticationTestSuite;
 
-import Pages.AmazonRegisterPage;
-import Utils.DriverUtils;
+import Extensions.Verifications;
+import Utils.AllureListeners;
 import Utils.ExcelUtils;
+import WorkFlows.AmazonRegisterWorkFlows;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+@Listeners(AllureListeners.class)
+public class RegistrationTest extends AmazonRegisterWorkFlows{
 
-public class RegistrationTest{
     private int rowCnt = 1;
     private int colCnt = 5;
-    private AmazonRegisterPage registerPom;
     private ExcelUtils eu;
+
 
     @BeforeClass
     public void setUp()
     {
-        WebDriver driver = DriverUtils.createDriverObj(2);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        registerPom = new AmazonRegisterPage(driver, wait);
-        registerPom.visit("https://www.amazon.com/ap/register?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fcart%2Fview.html%2F%3Fie%3DUTF8%26_encoding%3DUTF8%26redirectDevice%3Ddesktop%26redirectToFullPage%3D1%26ref_%3Dnav_newcust&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=usflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&");
+        visitAmazonLoginPage();
         eu = new ExcelUtils();
     }
 
@@ -46,13 +39,9 @@ public class RegistrationTest{
     }
 
     @BeforeMethod
-    public void emptyAllInputs()
+    public  void emptyAllInputs()
     {
-        registerPom.clear(registerPom.getCustomerName());
-        registerPom.clear(registerPom.getPassword());
-        registerPom.clear(registerPom.getReEnteredPassword());
-        registerPom.clear(registerPom.getCustomerName());
-        registerPom.clear(registerPom.getCustomerEmail());
+        emptyAllInputsInRegisterPage();
     }
 
     @DataProvider(name = "my-data-provider1")
@@ -61,8 +50,6 @@ public class RegistrationTest{
         Object[][] obj = eu.getExcelData("finalProjectExcel.xlsx", "passwordDoNotMatchSheet");
 
         return obj;
-//  example:      return new Object[][] {{"fadi","fadi@gma.com","d2345678","d234567","Passwords must match"},
-//                                {"stam","stam@stam.com","d1111111","d2222222","Passwords must match"}};
     }
 
 
@@ -73,12 +60,9 @@ public class RegistrationTest{
     public void passwordDoNotMatch(String name,String email,String password,String rePassword,String expected)
     {
 
-        registerPom.typeInto(name,registerPom.getCustomerName());
-        registerPom.typeInto(email, registerPom.getCustomerEmail());
-        registerPom.typeInto(password, registerPom.getPassword());
-        registerPom.typeInto(rePassword, registerPom.getReEnteredPassword());
-        registerPom.click(registerPom.getSubmitButton());
-        String actual = registerPom.getText(registerPom.getMissMatchAlert());
+        typeIntoAllFields(name, email, password, rePassword);
+        clickSubmit();
+        String actual = getPasswordMustMatchMessage();
         if(actual.equals(expected))
         {
             eu.setCellValue(rowCnt, colCnt , "finalProjectExcel.xlsx", "passwordDoNotMatchSheet", actual);
@@ -90,7 +74,7 @@ public class RegistrationTest{
             eu.setCellValue(rowCnt, (colCnt + 1) , "finalProjectExcel.xlsx", "passwordDoNotMatchSheet", "Pass");
         }
         rowCnt++;
-        Assert.assertEquals(actual, expected);
+        Verifications.verifyRegisterWithUnMatchedPasswords(actual, expected);
     }
 
     @DataProvider(name = "my-data-provider2")
@@ -107,12 +91,9 @@ public class RegistrationTest{
     @Story("Password with less than six digits registration test")
     public void passwordLessThanSixDigits(String name, String email, String password, String rePassword, String expected)
     {
-        registerPom.typeInto(name,registerPom.getCustomerName());
-        registerPom.typeInto(email, registerPom.getCustomerEmail());
-        registerPom.typeInto(password, registerPom.getPassword());
-        registerPom.typeInto(rePassword, registerPom.getReEnteredPassword());
-        registerPom.click(registerPom.getSubmitButton());
-        String actual = registerPom.getText(registerPom.getLessThanSixDigitsAlert());
+        typeIntoAllFields(name, email, password, rePassword);
+        clickSubmit();
+        String actual = getPasswordLessThanSixDigitsMessage();
         if(actual.equals(expected))
         {
             eu.setCellValue(rowCnt, colCnt , "finalProjectExcel.xlsx", "passwordLessThanSixDigitsSheet", actual);
@@ -124,8 +105,7 @@ public class RegistrationTest{
             eu.setCellValue(rowCnt, colCnt + 1 , "finalProjectExcel.xlsx", "passwordLessThanSixDigitsSheet", "Pass");
         }
         rowCnt++;
-        Assert.assertEquals(actual, expected);
-
+        Verifications.verifyRegisterWithLessThanSixDigitPassword(actual, expected);
     }
     @DataProvider(name = "my-data-provider3")
     Object[][] myDataProviderForInvalidEmails() throws IOException {
@@ -134,17 +114,14 @@ public class RegistrationTest{
     }
 
     @Test(dataProvider = "my-data-provider3")
-    @Description("Register Description:Trying to register with invalid email")
+    @Description("Register Description:Trying to register with invalid email/phone")
     @Severity(SeverityLevel.BLOCKER)
-    @Story("invalid email registration test")
-    public void invalidEmail(String name, String email, String password, String rePassword, String expected)
+    @Story("invalid email/phone registration test")
+    public void invalidEmailOrPhone(String name, String email, String password, String rePassword, String expected)
     {
-        registerPom.typeInto(name,registerPom.getCustomerName());
-        registerPom.typeInto(email, registerPom.getCustomerEmail());
-        registerPom.typeInto(password, registerPom.getPassword());
-        registerPom.typeInto(rePassword, registerPom.getReEnteredPassword());
-        registerPom.click(registerPom.getSubmitButton());
-        String actual = registerPom.getText(registerPom.getInvalidEmailAlert());
+        typeIntoAllFields(name, email, password, rePassword);
+        clickSubmit();
+        String actual = getWrongPhoneOrEmailMessage();
         if(actual.equals(expected))
         {
             eu.setCellValue(rowCnt, colCnt , "finalProjectExcel.xlsx", "invalidEmailSheet", actual);
@@ -156,24 +133,22 @@ public class RegistrationTest{
             eu.setCellValue(rowCnt, colCnt + 1 , "finalProjectExcel.xlsx", "invalidEmailSheet", "Pass");
         }
         rowCnt++;
-        Assert.assertEquals(actual, expected);
+       Verifications.verifyRegisterWithInvalidEmailOrPhone(actual, expected);
 
     }
-    @AfterMethod()
-    public void takenScreenShot(ITestResult result)
+
+    @AfterMethod
+    public void takeScreenShotOnFailure(ITestResult iTestResult)
     {
-        if(result.getStatus() == ITestResult.FAILURE)
+        if(iTestResult.getStatus() == ITestResult.FAILURE)
         {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy__hh_mm_ss");
-            LocalDateTime now = LocalDateTime.now();
-            String fileName = "registrationFailed_"+result.getMethod().getMethodName()+"_"+now.format(dtf);
-            registerPom.takeScreenShot("captureScreenShots", fileName ,registerPom.getDriver());
+            saveFullPageScreenShot(register.getDriver());
         }
     }
 
     @AfterClass()
     public void terminate()
     {
-        registerPom.terminate();
+        AmazonRegisterWorkFlows.terminateBrowser();
     }
 }

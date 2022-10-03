@@ -1,4 +1,12 @@
-package Pages;
+package Pages.WebPages;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,25 +14,16 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 public class BasePage {
+
     private WebDriver driver;
     private WebDriverWait wait;
 
     public BasePage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
         this.wait = wait;
+        PageFactory.initElements(driver, this);
+
     }
 
     public WebDriver getDriver() {
@@ -36,6 +35,7 @@ public class BasePage {
              wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
+
     public void waitUntilVisibilityElementLocated(By locator) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
@@ -44,6 +44,7 @@ public class BasePage {
     {
         wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
+
     public void waitUntilUrlContains(String url)
     {
         wait.until(ExpectedConditions.urlContains(url));
@@ -73,11 +74,14 @@ public class BasePage {
         return findElem(locator);
     }
 
-    public WebElement click(By locator) {
+    public WebElement typeInto(String inputText, WebElement element) {
+        element.sendKeys(inputText);
+        return element;
+    }
 
-        WebElement wb = findElem(locator);
-        wb.click();
-        return wb;
+    public WebElement click(WebElement element) {
+        element.click();
+        return element;
     }
 
     // --------------------------------------------------
@@ -89,17 +93,11 @@ public class BasePage {
             return false;
         }
     }
-    public void clear(By locator) {
-        driver.findElement(locator).clear();
+
+    public void clear(WebElement element) {
+        element.clear();
     }
 
-    // --------------------------------------------------
-
-    /*
-     * <select> <option value="paris"> Paris the beautiful city </option> <option
-     * value="nyc"> New York the big apple </option> <option value="vienna"> Vienna
-     * the great place to visit </option> </select>
-     */
     public void selectFromDropDownListByValue(By locator, String value) {
         Select select = new Select(driver.findElement(locator));
         select.selectByValue(value);
@@ -118,8 +116,8 @@ public class BasePage {
 
     public void visit(String url) {
         driver.get(url);
-        //driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
     public void terminate()

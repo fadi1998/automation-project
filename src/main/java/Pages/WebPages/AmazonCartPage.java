@@ -1,59 +1,77 @@
-package Pages;
+package Pages.WebPages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AmazonCartPage extends BasePage {
-    private By goToCart = By.cssSelector("#nav-cart");
-    private By searchBox = By.cssSelector("#twotabsearchtextbox");
-    private By searchBoxSubmit = By.cssSelector("#nav-search-submit-button");
-    private By product = By.cssSelector("[data-image-index=\"2\"]");
-    //[data-component-id="3"] > div > div > div > span >a
-    private By addToCartButton = By.cssSelector("#add-to-cart-button");
-    private By totalProducts = By.cssSelector("#sc-subtotal-label-buybox");
-    private By deleteAllProducts = By.cssSelector("[data-feature-id=\"delete\"] > span>input");
-    private By saveItemForLaterInput = By.cssSelector("input[value=\"Save for later\"]");
-    private By saveItemForLaterCount = By.cssSelector("[id=\"sc-saved-cart-list-caption-text\"]");
+    @FindBy(css = "#nav-cart")
+    private static WebElement goToCart;
+
+    @FindBy(css = "#twotabsearchtextbox")
+    private static WebElement SearchBoxInput;
+
+    @FindBy(css = "#nav-search-submit-button")
+    private static WebElement searchBoxSubmitButton;
+
+    @FindBy(css = "[data-image-index=\"1\"]")
+    private static WebElement product;
+
+    @FindBy(css = "#add-to-cart-button")
+    private static WebElement addToCartButton;
+
+    @FindBy(css = "#sc-subtotal-label-buybox")
+    private static WebElement totalProducts;
+
+    @FindBy(css = "[data-feature-id=\"delete\"] > span >input")
+    private static WebElement deleteProduct;
+
+    @FindBy(css = "[aria-label=\"Save for later Things We Never Got Over (Knockemout Series)\"]")
+    private static WebElement saveItemForLaterInput;
+
+    @FindBy(css = "[id=\"sc-saved-cart-list-caption-text\"]")
+    private static WebElement saveItemForLaterCount;
 
     public AmazonCartPage(WebDriver driver, WebDriverWait wait)
     {
         super(driver, wait);
     }
 
-    public By getGoToCart() {
+    //Getters
+    public WebElement getGoToCart() {
         return goToCart;
     }
 
-    public By getProduct() {
+    public WebElement getProduct() {
         return product;
     }
 
-    public By getAddToCartButton() {
+    public WebElement getAddToCartButton() {
         return addToCartButton;
     }
 
-    public By getSearchBox() {
-        return searchBox;
+    public WebElement getSearchBox() {
+        return SearchBoxInput;
     }
 
-    public By getSearchBoxSubmit() {
-        return searchBoxSubmit;
+    public WebElement getSearchBoxSubmit() {
+        return searchBoxSubmitButton;
     }
 
-    public By getTotalProducts() {
+    public WebElement getTotalProducts() {
         return totalProducts;
     }
 
-    public By getDeleteAllProducts() {
-        return deleteAllProducts;
+    public WebElement getDeleteProduct() {
+        return deleteProduct;
     }
 
-    public By getSaveItemForLaterInput() {
+    public WebElement getSaveItemForLaterInput() {
         return saveItemForLaterInput;
     }
 
-    public By getSaveItemForLaterCount() {
+    public WebElement getSaveItemForLaterCount() {
         return saveItemForLaterCount;
     }
 }

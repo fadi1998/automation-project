@@ -1,33 +1,47 @@
-package Pages;
+package Pages.WebPages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 public class AmazonSearchPage extends BasePage {
-    private By searchBox = By.cssSelector("#twotabsearchtextbox");
-    private By searchBoxSubmit = By.cssSelector("#nav-search-submit-button");
-    private By result = By.cssSelector(".sg-col-inner");
-    private By priceList = By.cssSelector(".a-price[data-a-size=\"xl\"] > span[class=a-offscreen]");
+
+    @FindBy(css = "#twotabsearchtextbox")
+    private WebElement searchBox;
+
+    @FindBy(css = "#nav-search-submit-button")
+    private WebElement searchBoxSubmit;
+
+    @FindBy(css = ".sg-col-inner")
+    private WebElement result;
+
+    @FindBy(css  = ".a-price[data-a-size=\"xl\"] > span[class=a-offscreen]")
+    private List<WebElement> priceList;
 
     public AmazonSearchPage(WebDriver driver, WebDriverWait wait)
     {
         super(driver,wait);
     }
 
-    public By getSearchBox() {
+    //Getters
+    public WebElement getSearchBox() {
         return searchBox;
     }
 
-    public By getSearchBoxSubmit() {
+    public WebElement getSearchBoxSubmit() {
         return searchBoxSubmit;
     }
 
-    public By getResult() {
+    public WebElement getResult() {
         return result;
     }
 
-    public By getPriceList() {
+    public List<WebElement> getPriceList() {
         return priceList;
     }
 }

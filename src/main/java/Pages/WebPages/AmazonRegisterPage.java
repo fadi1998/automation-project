@@ -1,18 +1,38 @@
-package Pages;
+package Pages.WebPages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AmazonRegisterPage extends BasePage{
-    private By customerName = By.cssSelector("#ap_customer_name");
-    private By customerEmail = By.cssSelector("#ap_email");
-    private By password = By.cssSelector("#ap_password");
-    private By reEnteredPassword = By.cssSelector("#ap_password_check");
-    private By submitButton = By.cssSelector("#auth-continue");
-    private By missMatchAlert = By.cssSelector("#auth-password-mismatch-alert > div > div");
-    private By lessThanSixDigitsAlert = By.cssSelector("#auth-password-invalid-password-alert > div > div");
-    private By invalidEmailAlert = By.cssSelector("#auth-email-invalid-claim-alert > div > div");
+public class AmazonRegisterPage extends BasePage {
+
+    @FindBy(css = "#ap_customer_name")
+    private static WebElement customerName;
+
+    @FindBy(css = "#ap_email")
+    private static WebElement customerEmail ;
+
+    @FindBy(css = "#ap_password")
+    private static WebElement password;
+
+    @FindBy(css = "#ap_password_check")
+    private static WebElement reEnteredPassword;
+
+    @FindBy(css = "#auth-continue")
+    private static WebElement submitButton;
+
+    @FindBy(css = "#auth-password-mismatch-alert > div > div")
+    private static WebElement mustMatchAlert;
+
+    @FindBy(css = "#auth-password-invalid-password-alert > div > div")
+    private static WebElement lessThanSixDigitsAlert ;
+
+    @FindBy(css  = "#auth-email-invalid-claim-alert > div > div")
+    private static  WebElement invalidEmailAlert;
+
+    @FindBy(css = "[id=\"ap_register_form\"]")
+    private static WebElement registerForm;
 
 
 
@@ -21,37 +41,41 @@ public class AmazonRegisterPage extends BasePage{
         super(driver, wait);
     }
 
-    public By getCustomerName() {
+    //Getters
+    public WebElement getCustomerName() {
         return customerName;
     }
 
-    public By getCustomerEmail() {
+    public WebElement getCustomerEmail() {
         return customerEmail;
     }
 
-    public By getPassword() {
+    public WebElement getPassword() {
         return password;
     }
 
-    public By getReEnteredPassword() {
+    public WebElement getReEnteredPassword() {
         return reEnteredPassword;
     }
 
-    public By getSubmitButton() {
+    public WebElement getSubmitButton() {
         return submitButton;
     }
 
-    public By getMissMatchAlert() {
-        return missMatchAlert;
+    public WebElement getMustMatchAlert() {
+        return mustMatchAlert;
     }
 
-    public By getLessThanSixDigitsAlert() {
+    public WebElement getLessThanSixDigitsAlert() {
         return lessThanSixDigitsAlert;
     }
 
-    public By getInvalidEmailAlert()
+    public WebElement getInvalidEmailAlert()
     {
         return invalidEmailAlert;
     }
 
+    public  WebElement getRegisterForm() {
+        return registerForm;
+    }
 }

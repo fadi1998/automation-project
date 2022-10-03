@@ -1,33 +1,50 @@
-package Pages;
+package Pages.WebPages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AmazonLoginPage extends BasePage{
-    private By email = By.cssSelector("#ap_email");
-    private By emailAlertBoxEmail = By.cssSelector("#auth-error-message-box > div > div > ul > li > span");
-    private By emailAlertBoxPhone = By.cssSelector("#auth-error-message-box > div > div > ul > li > span");
-    private By submit = By.cssSelector("input[type=submit]");
+public class AmazonLoginPage extends BasePage {
+    @FindBy(css = "#ap_email")
+    private static WebElement inputUsernameField;
+
+    @FindBy(css = "#ap_password")
+    private static WebElement inputPasswordFiled;
+
+    @FindBy(css = "#auth-error-message-box > div > div > ul > li > span")
+    private static WebElement AlertBoxMessage;
+
+    @FindBy(css = "input[type=submit]")
+    private static WebElement submit;
+
+    @FindBy(css = "#nav-link-accountList-nav-line-1")
+    private static WebElement verifyLoginText;
 
     public AmazonLoginPage(WebDriver driver, WebDriverWait wait)
     {
         super(driver, wait);
     }
 
-    public By getEmail() {
-        return email;
+    //Getters
+    public WebElement getInputUsernameField() {
+        return inputUsernameField;
     }
 
-    public By getEmailAlertBoxEmail() {
-        return emailAlertBoxEmail;
+    public  WebElement getInputPasswordFiled() {
+        return inputPasswordFiled;
     }
 
-    public By getEmailAlertBoxPhone(){
-        return emailAlertBoxPhone;
+    public WebElement getAlertBoxMessage() {
+        return AlertBoxMessage;
     }
 
-    public By getSubmit() {
+    public WebElement getSubmit() {
         return submit;
+    }
+
+    public WebElement getVerifyLoginText() {
+        return verifyLoginText;
     }
 }
