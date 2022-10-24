@@ -62,6 +62,19 @@ public class Verifications {
         Assert.assertEquals(actual, expected);
     }
 
+    @Step("Verify that eight plus two equals ten")
+    public static void verifyEightPlusTwo_EqualTen(int actual, int expected)
+    {
+            Assert.assertEquals(actual, expected);
+    }
+
+    @Step("Verify that eight Multiplied by two equals sixteen")
+    public static void verifyEightMulTwo_EqualSixteen(int actual, int expected)
+    {
+        Assert.assertEquals(actual, expected);
+    }
+
+
 
 
 

@@ -1,5 +1,6 @@
 package Pages.WebPages;
 
+import Pages.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -27,7 +28,7 @@ public class AmazonCartPage extends BasePage {
     @FindBy(css = "[data-feature-id=\"delete\"] > span >input")
     private static WebElement deleteProduct;
 
-    @FindBy(css = "[aria-label=\"Save for later Things We Never Got Over (Knockemout Series)\"]")
+    @FindBy(css = "[aria-label=\"Save for later Things We Never Got Over (Knockemout)\"]")
     private static WebElement saveItemForLaterInput;
 
     @FindBy(css = "[id=\"sc-saved-cart-list-caption-text\"]")

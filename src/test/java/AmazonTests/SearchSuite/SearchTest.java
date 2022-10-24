@@ -1,7 +1,6 @@
 package AmazonTests.SearchSuite;
 
 import Extensions.Verifications;
-import Pages.WebPages.AmazonSearchPage;
 import Utils.AllureListeners;
 import WorkFlows.AmazonSearchWorkFlows;
 import io.qameta.allure.Description;
@@ -45,7 +44,7 @@ public class SearchTest extends AmazonSearchWorkFlows{
     @Parameters({"minPrice", "searchForResult"})
     @Description("Search Description:Trying to search for a product with the minimum price")
     @Story("search for the cheapest product")
-    public void checkTheCheapestPriceForAProduct(@Optional("5.51") double expected, @Optional("airpods pro case cover") String productName)
+    public void checkTheCheapestPriceForAProduct(@Optional("3.99") double expected, @Optional("airpods pro case cover") String productName)
     {
         typeIntoSearchBox(productName);
         clickSearchButton();
@@ -55,7 +54,7 @@ public class SearchTest extends AmazonSearchWorkFlows{
     }
 
     @AfterMethod
-    public void takeScreenShotOnFaliure(ITestResult iTestResult)
+    public void takeScreenShotOnFailure(ITestResult iTestResult)
     {
         if(iTestResult.getStatus() == ITestResult.FAILURE)
         {
